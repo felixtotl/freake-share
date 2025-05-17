@@ -1,0 +1,39 @@
+import JSZip from 'jszip';
+
+const handleUpload = async () => {
+  if (!file) return;
+
+  setUploading(true);
+  setError('');
+  setUrl('');
+
+  try {
+    // ZIP erstellen
+    const zip = new JSZip();
+    zip.file(file.name, file);
+    const zippedBlob = await zip.generateAsync({ type: 'blob' });
+    const zippedFile = new File([zippedBlob], `${file.name}.zip`, {
+      type: 'application/zip',
+    });
+
+    const res = await fetch('/api/upload', {
+      method: 'POST',
+      headers: {
+        'content-type': zippedFile.type,
+      },
+      body: zippedFile,
+    });
+
+    const data = await res.json();
+
+    if (res.ok) {
+      setUrl(data.url);
+    } else {
+      setError(data.error || 'Unbekannter Fehler');
+    }
+  } catch (err) {
+    setError('Fehler: ' + err.message);
+  } finally {
+    setUploading(false);
+  }
+};
