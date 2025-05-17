@@ -10,9 +10,19 @@ export default function Home() {
   const [unzippedFiles, setUnzippedFiles] = useState([]);
   const [error, setError] = useState("");
 
-  const mailtoLink = `mailto:?subject=Datei%20hochgeladen&body=Hier%20ist%20dein%20Download-Link:%0A${encodeURIComponent(
-    url
-  )}%0A%0AEinfach auf den Link klicken, um die Datei herunterzuladen.`;
+  const mailBody = `Hallo!
+
+ich habe dir soeben eine Datei über FreakeShare zukommen lassen. Du kannst sie sicher und bequem unter folgendem Link herunterladen: 
+
+${url}
+
+Und so einfach geht es: Klicke auf den Link oben. Der Download startet dann automatisch. Bitte beachte jedoch, dass es sich um eine ZIP-Datei handelt. Besuche deshalb anschließend die offizielle FreakeShare-Website (https://freake-share.vercel.app) und suche dort nach dem Bereich "ZIP entpacken". Dort kannst du die heruntergeladene Datei hochladen, um sie zu entpacken. Danach kannst du die Dateien einzeln herunterladen oder nur die, die du benötigst.
+
+Die FreakeShare-Plattform ist eine vertrauenswürdige Quelle für diese Art von Dateien, sodass du dir keine Sorgen machen musst.
+
+Viele Grüße`;
+
+  const mailtoLink = `mailto:?subject=Ich%20habe%20dir%20eine%20Datei%20über%20FreakeShare%20geschickt!&body=${encodeURIComponent(mailBody)}`;
 
   const handleUploadChange = (e) => {
     setUploadFiles(Array.from(e.target.files));
@@ -20,7 +30,17 @@ export default function Home() {
     setError("");
   };
 
-
+  const handleCopyToClipboard = async () => {
+    if (url) {
+      try {
+        await navigator.clipboard.writeText(url);
+        alert("Link in die Zwischenablage kopiert!");
+      } catch (err) {
+        console.error("Fehler beim Kopieren des Links: ", err);
+        alert("Fehler beim Kopieren des Links.");
+      }
+    }
+  };
 
   const handleUpload = async () => {
     if (uploadFiles.length === 0) return;
@@ -100,20 +120,19 @@ export default function Home() {
         />
       </Head>
 
-
       <div className="header">
-        <h1>🎉 Willkommen bei <strong>Freake Share</strong></h1>
+        <h1>Willkommen bei <strong>Freake Share</strong></h1>
         <p>Einfach Dateien zippen, teilen oder entpacken</p>
       </div>
 
       <div className="container">
         {/* Upload */}
         <div className="box">
-          <h2>Datei(en) hochladen</h2>
+          <h2>Dateien hochladen</h2>
           <input type="file" multiple onChange={handleUploadChange} />
           <br />
           <button onClick={handleUpload} disabled={uploadFiles.length === 0 || uploading}>
-            {uploading ? "Lade ZIP hoch..." : "ZIP hochladen"}
+            {uploading ? "Lade Dateien hoch..." : "Dateien hochladen"}
           </button>
 
           {url && (
@@ -127,9 +146,7 @@ export default function Home() {
               <a href={mailtoLink}>
                 <button>Email mit Link verschicken</button>
               </a>
-              <p style={{ marginTop: "10px", fontSize: "0.9em", color: "#666" }}>
-                Öffnet dein Mailprogramm mit dem Link.
-              </p>
+              <button style={{ marginLeft: "10px" }} onClick={handleCopyToClipboard}>Link kopieren</button>
             </>
           )}
         </div>
@@ -166,7 +183,8 @@ export default function Home() {
       {error && <p className="error">⚠️ Fehler: {error}</p>}
 
       <footer>
-        <a href="https://www.freake-chatnet.cloudns.ch/impressum-datenschutz-erklärung-mehr">Impressum</a> | <a href="/https://www.freake-chatnet.cloudns.ch/impressum-datenschutz-erklärung-mehr">Datenschutz</a>
+        <a href="https://www.freake-chatnet.cloudns.ch/impressum-datenschutz-erklärung-mehr">Impressum</a> |{" "}
+        <a href="https://www.freake-chatnet.cloudns.ch/impressum-datenschutz-erklärung-mehr">Datenschutz</a>
       </footer>
     </>
   );
