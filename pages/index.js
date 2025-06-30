@@ -9,6 +9,8 @@ export default function Home() {
   const [unzipFile, setUnzipFile] = useState(null);
   const [unzippedFiles, setUnzippedFiles] = useState([]);
   const [error, setError] = useState("");
+  // Setzen Sie dies auf false, um zu simulieren, dass der Dienst abgeschaltet ist.
+  const [isFreakShareActive, setIsFreakShareActive] = useState(false); 
 
   const mailBody = `Hallo!
 
@@ -27,7 +29,7 @@ Viele Grüße`;
   const handleUploadChange = (e) => {
     setUploadFiles(Array.from(e.target.files));
     setUrl("");
-    setError("");
+    setError(""); // Fehler zurücksetzen, wenn neue Dateien ausgewählt werden
   };
 
   const handleCopyToClipboard = async () => {
@@ -43,9 +45,15 @@ Viele Grüße`;
   };
 
   const handleUpload = async () => {
-    if (uploadFiles.length === 0) return;
+    // Überprüfen, ob Freak Share aktiv ist, BEVOR der Upload-Vorgang beginnt
+    if (!isFreakShareActive) {
+      setError("Freak Share ist derzeit abgeschaltet, wird aber bald wieder aktiviert.");
+      return; // Beendet die Funktion frühzeitig
+    }
+
+    if (uploadFiles.length === 0) return; // Stellen Sie sicher, dass Dateien ausgewählt sind
     setUploading(true);
-    setError("");
+    setError(""); // Vor dem Upload den Fehler zurücksetzen
     setUrl("");
     setUnzippedFiles([]);
 
@@ -85,7 +93,7 @@ Viele Grüße`;
   const handleUnzipChange = (e) => {
     setUnzipFile(e.target.files[0] || null);
     setUnzippedFiles([]);
-    setError("");
+    setError(""); // Fehler zurücksetzen, wenn neue Datei ausgewählt wird
   };
 
   const handleUnzip = async () => {
@@ -131,6 +139,7 @@ Viele Grüße`;
           <h2>Dateien hochladen</h2>
           <input type="file" multiple onChange={handleUploadChange} />
           <br />
+          {/* Der Button ist nur deaktiviert, wenn keine Dateien ausgewählt sind oder ein Upload läuft */}
           <button onClick={handleUpload} disabled={uploadFiles.length === 0 || uploading}>
             {uploading ? "Lade Dateien hoch..." : "Dateien hochladen"}
           </button>
