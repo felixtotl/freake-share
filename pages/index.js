@@ -47,7 +47,7 @@ Viele Grüße`;
   const handleUpload = async () => {
     // Überprüfen, ob Freak Share aktiv ist, BEVOR der Upload-Vorgang beginnt
     if (!isFreakShareActive) {
-      setError("Freak Share ist derzeit abgeschaltet, wird aber bald wieder aktiviert.");
+      setError("Freake Share ist derzeit abgeschaltet, wird aber bald wieder aktiviert.");
       return; // Beendet die Funktion frühzeitig
     }
 
