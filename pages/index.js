@@ -10,7 +10,7 @@ export default function Home() {
   const [unzippedFiles, setUnzippedFiles] = useState([]);
   const [error, setError] = useState("");
   // Setzen Sie dies auf false, um zu simulieren, dass der Dienst abgeschaltet ist.
-  const [isFreakShareActive, setIsFreakShareActive] = useState(false); 
+  const [isFreakShareActive, setIsFreakShareActive] = useState(true); 
 
   const mailBody = `Hallo!
 
